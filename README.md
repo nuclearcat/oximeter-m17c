@@ -5,6 +5,12 @@
 This is a Python GUI for a BLE oximeter. It connects to the oximeter, reads data, and displays it in a user-friendly interface.
 Reverse engineering was done with the help of OpenAI's ChatGPT, which provided code snippets and guidance throughout the process.
 
+## Model
+
+I found model of the oximeter. Due age, label is not well visible. It is M170 (maybe M170C).
+Manufacturer: http://www.arystonetech.com/productshow.asp?ArticleID=0&id=288&cid=002 
+Photo of product: <img src="http://www.arystonetech.com/PIC/PIC/2019122824580.jpg" width="300" height="300">
+
 ## Backstory
 
 One evening, I opened a drawer and spotted a no-name oximeter with BLE capabilities that I'd purchased on AliExpress—without any BLE software.
@@ -21,4 +27,3 @@ I ask it more - "There are also 5 chunks of some data—what might they be? Perh
 The AI analyzed this and displayed a pulse waveform!
 - "Can you write me a nice GUI to show all this data?"
 Success.
-
