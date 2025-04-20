@@ -73,8 +73,10 @@ class LiveApp:
         # Labels for BPM and SpO₂
         self.bpm_var  = tk.StringVar(value="BPM: --")
         self.spo2_var = tk.StringVar(value="SpO₂: --")
-        tk.Label(root, textvariable=self.bpm_var,  font=(None, 16)).pack(pady=5)
-        tk.Label(root, textvariable=self.spo2_var, font=(None, 16)).pack(pady=5)
+        self.label_bpm = tk.Label(root, textvariable=self.bpm_var,  font=(None, 16))
+        self.label_bpm.pack(pady=10)
+        self.label_spo2 = tk.Label(root, textvariable=self.spo2_var, font=(None, 16))
+        self.label_spo2.pack(pady=10)
 
         # Matplotlib figure for waveform
         self.fig = Figure(figsize=(5, 3))
@@ -102,8 +104,10 @@ class LiveApp:
             kind, *vals = data_queue.get()
             if kind == "measure":
                 bpm, spo2 = vals
-                self.bpm_var.set(f"BPM: {bpm}")
+                self.label_spo2.config(fg="green" if spo2 > 95 else "red")
                 self.spo2_var.set(f"SpO₂: {spo2}%")
+                self.label_bpm.config(fg="green" if bpm > 50 else "red")
+                self.bpm_var.set(f"BPM: {bpm}")
             elif kind == "waveform":
                 (sample,) = vals
                 self.wave_buf.append(sample)
@@ -122,6 +126,10 @@ class LiveApp:
 
 async def main():
     global TARGET
+    print("Welcome to the Live SpO₂ & PPG Monitor!")
+    print("Make sure your device is powered on and in range.")
+    print("Press Ctrl+C to exit.")
+    print("Scanning for devices...")
     # Scan BLE and ask user to select the device
     scanner = BleakScanner()
     discovered = await scanner.discover()
@@ -136,8 +144,15 @@ async def main():
     print("Available devices:")
     for i, device in enumerate(discovered):
         print(f"{i}: {device.name} ({device.address})")
-    # Ask user to select the device
-    selected_device = input("Select device by index: ")
+    # Ask user to select the device if there is more than one
+    selected_device = None
+    if len(discovered) == 1:
+        print("Only one device found, using it.")
+        selected_device = 0
+    else:
+        print("Select the device by index:")
+        selected_device = input("Enter the index of the device: ")
+
     try:
         selected_device = int(selected_device)
         TARGET = discovered[selected_device].address
